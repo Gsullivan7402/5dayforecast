@@ -1,0 +1,54 @@
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #e4e4e4;
+}
+
+#dashboard {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+#search-container,
+#weather-container {
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 48%;
+}
+
+#search-container h2,
+#weather-container h2,
+#weather-container h3 {
+    margin-top: 0;
+}
+
+#search-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 1em;
+}
+
+#search-history {
+    margin-top: 20px;
+}
+
+#forecast-cards {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.forecast-card {
+    text-align: center;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    width: 19%;
+}
+
+/* Add additional styling as needed */
