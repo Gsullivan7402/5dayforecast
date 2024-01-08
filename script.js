@@ -124,3 +124,18 @@ function addCityToHistory(city) {
         historyContainer.appendChild(cityButton);
     }
 }
+
+function saveCityToLocalStorage(city) {
+    localStorage.setItem('lastViewedCity', city);
+    let cities = JSON.parse(localStorage.getItem('searchedCities')) || [];
+    if (!cities.includes(city)) {
+        cities.push(city);
+        localStorage.setItem('searchedCities', JSON.stringify(cities));
+    }
+}
+
+function loadSearchHistory() {
+    const cities = JSON.parse(localStorage.getItem('searchedCities')) || [];
+    cities.forEach(city => addCityToHistory(city));
+}
+
