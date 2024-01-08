@@ -1,9 +1,10 @@
-const apiKey = '4279676e2edcd6a6fc6d79e7c22e7416'; 
+const apiKey = '4279676e2edcd6a6fc6d79e7c22e7416'; // Use your actual API key
 
 document.getElementById('search-button').addEventListener('click', function() {
     const city = document.getElementById('city-input').value.trim();
-    if (city) {
+    if (city && !isCityInHistory(city)) {
         fetchWeatherData(city);
+        addCityToHistory(city);
     }
 });
 
@@ -20,7 +21,6 @@ function fetchWeatherData(city) {
             if(data && data.length > 0) {
                 const { lat, lon } = data[0];
                 fetchForecast(lat, lon);
-                addCityToHistory(city);
             } else {
                 console.log("No location found.");
                 alert("No location found. Please try another city.");
@@ -54,11 +54,9 @@ function updateWeatherDisplay(weatherData) {
     const currentWeatherDiv = document.getElementById('current-weather');
     const forecastCardsDiv = document.getElementById('forecast-cards');
 
-    // Clear previous content
     currentWeatherDiv.innerHTML = '';
     forecastCardsDiv.innerHTML = '';
 
-    // Update current weather
     const currentWeather = weatherData.list[0];
     const currentWeatherContent = `
         <h2>${weatherData.city.name} (${new Date(currentWeather.dt_txt).toLocaleDateString()})</h2>
@@ -68,7 +66,6 @@ function updateWeatherDisplay(weatherData) {
     `;
     currentWeatherDiv.innerHTML = currentWeatherContent;
 
-    // Create forecast cards
     for (let i = 0; i < weatherData.list.length; i += 8) {
         const forecast = weatherData.list[i];
         const forecastCard = document.createElement('div');
@@ -82,15 +79,48 @@ function updateWeatherDisplay(weatherData) {
         forecastCard.innerHTML = forecastCardContent;
         forecastCardsDiv.appendChild(forecastCard);
     }
+
+    const weatherCondition = weatherData.list[0].weather[0].main;
+    applyWeatherGradient(weatherCondition);
+}
+
+function applyWeatherGradient(condition) {
+    const body = document.body;
+    let gradient = "linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%)"; // Default clear sky
+
+    switch (condition) {
+        case 'Clouds':
+            gradient = "linear-gradient(120deg, #d3d3d3 0%, #c4c4c4 100%)";
+            break;
+        case 'Rain':
+        case 'Drizzle':
+            gradient = "linear-gradient(120deg, #a4b0be 0%, #747d8c 100%)";
+            break;
+        case 'Thunderstorm':
+            gradient = "linear-gradient(120deg, #373b44 0%, #4286f4 100%)";
+            break;
+        case 'Snow':
+            gradient = "linear-gradient(120deg, #f7f7f7 0%, #cfd9df 100%)";
+            break;
+        // Add more cases as necessary
+    }
+    body.style.backgroundImage = gradient;
+}
+
+function isCityInHistory(city) {
+    const historyContainer = document.getElementById('search-history');
+    return Array.from(historyContainer.children).some(button => button.textContent.toLowerCase() === city.toLowerCase());
 }
 
 function addCityToHistory(city) {
     const historyContainer = document.getElementById('search-history');
-    const cityButton = document.createElement('button');
-    cityButton.textContent = city;
-    cityButton.classList.add('city-button');
-    cityButton.addEventListener('click', function() {
-        fetchWeatherData(city);
-    });
-    historyContainer.appendChild(cityButton);
+    if(!isCityInHistory(city)){
+        const cityButton = document.createElement('button');
+        cityButton.textContent = city;
+        cityButton.classList.add('city-button');
+        cityButton.addEventListener('click', function() {
+            fetchWeatherData(city);
+        });
+        historyContainer.appendChild(cityButton);
+    }
 }
